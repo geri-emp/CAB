@@ -1,0 +1,6 @@
+CAB
+ma_dist1	ma_dist2	mi_dist1	mi_dist2	avg_len
+0.9063	0.9687	0.0113	0.0423 	12.2850
+avg_bleu	bleu1	bleu2	bleu3	bleu4
+0.0868	0.1923	0.0855	0.0436	0.0257
+
