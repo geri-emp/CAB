@@ -44,7 +44,6 @@ python main.py \
 --heads 2 \
 --pretrain_emb \
 --model CAB \
---concept_num 1 \
 --multi_hop 5 \
 --K_num 5 \
 --k_num 3 \
