@@ -4,7 +4,7 @@ This is the official implementation for paper [CAB: Empathetic Dialogue Generati
 
 ## Model Architecture
 
-![Image of KEMP](others/Model.png)
+![Image of KEMP](/model.jpg)
 
 
 ## Setup
