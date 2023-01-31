@@ -14,7 +14,7 @@ pip install -r requirements.txt
 ```
 - Download GloVe vectors from [**here (glove.6B.300d.txt)**](https://drive.google.com/file/d/15ZEUyHCZ0f0mg0ecAFIbGInlkIUkOudY/view?usp=sharing) and put it into `/data/`.
 
-- Download other data sources regarding ConceptNet and NRC_VAD lexicon, please visit [**Google Drive**](https://drive.google.com/drive/folders/1IooFlLv0wbKuwdLL_3mNaQ8WWa_TCSkp?usp=sharing) and place processed dataset `kemp_dataset_preproc.json` into `/data/`.
+- Download the processed EmpatheticDialogues dataset with dialogue act label and both interlector's emotion lables from [**Google Drive**](https://drive.google.com/drive/folders/1Pvgh5PZE_svSna3A_yhHf_Wngb4T5tcl?usp=sharing) and place processed dataset `train.json, valid.json and test.json` into `/data/`.
 
 - For reproducibility purposes, we place the model checkpoints at [**Google Drive**](https://drive.google.com/drive/folders/1w5rOOUbhcGrS6v_YDw4d18lQZUT9phJV?usp=sharing). You could download and move it under `/result/[MODELNAME]/result/`, e.g., `/result/KEMP/result/KEMP_best.tar`.
 
