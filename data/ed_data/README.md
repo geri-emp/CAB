@@ -1,5 +1,9 @@
+#### This folder stores the EmpatheticDialogue dataset, which are divided into trian, valid and test.
+
+```
 .
-└── ed_data
+└──ed_data
     └── train.json  
-    └── valid.json  
+    └── valid.json    
     └── test.json 
+```
