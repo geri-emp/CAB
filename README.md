@@ -22,7 +22,7 @@ pip install -r requirements.txt
 
 - If you want to reconstruct knowledge paths, then you could:
 
-    - Download the processed [**ConceptNet data**](https://drive.google.com/file/d/1pURkucLpa0SAWfiwba_J28kM5NQuo0qD/view?usp=sharing) and place processed data `ConceptNet_ranked_dict.json` into `/data/knowledge_data/`,  meanwhile, download dataset_preproc.p from [**here**](https://drive.google.com/file/d/1si4hznX37dValdmKCgf38v4mMF07n3Z0/view?usp=sharing) and place it into `/data/`.
+    - Download the processed [**ConceptNet data**](https://drive.google.com/file/d/1pURkucLpa0SAWfiwba_J28kM5NQuo0qD/view?usp=sharing) and place processed data `ConceptNet_ranked_dict.json` into `/data/knowledge_data/`,  meanwhile, download [**dataset_preproc.p**] (https://drive.google.com/file/d/1si4hznX37dValdmKCgf38v4mMF07n3Z0/view?usp=sharing) and place it into `/data/`.
 
 - For reproducibility purposes, we place the model checkpoints at [**Google Drive**](https://drive.google.com/drive/folders/1g0MCmSClzM3VQoFy7LMhoEyBjOjiHTaJ?usp=sharing). You could download and move it under `/save/final/`.
 
