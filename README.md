@@ -29,100 +29,41 @@ pip install -r requirements.txt
 - To skip training, please check folder `/result/CAB/output.txt/`.
 
 
-
-## Data preprocessing
-
-The dataset (EmpatheticDialogue) is preprocessed and stored under `data` in pickle format
-```bash
-python preprocess.py
-```
-You can skip the data processing and directly use the processed file `kemp_dataset_preproc.json`.
-
 ## Training
-#### KEMP (Our)
+#### CAB (Our)
 ```bash
 python main.py \
 --cuda \
---label_smoothing \
---noam \
---emb_dim 300 \
+--batch_size 16 \
+--lr 1e-4 \
 --hidden_dim 300 \
+--emo_dim 300 \
+--act_dim 300 \
+--latent_dim 200\
 --hop 1 \
 --heads 2 \
 --pretrain_emb \
---model KEMP \
---device_id 0 \
+--model CAB \
 --concept_num 1 \
---total_concept_num 10 \
---attn_loss \
+--multi_hop 5 \
+--K_num 5 \
+--k_num 3 \
+--path_num 15 \
 --pointer_gen \
---save_path result/KEMP/ \
---emb_file data/glove.6B.300d.txt
+--emb_file data/glove.840B.300d.txt
 ```
 
-#### KEMP w/o ECE
-
-This model does not consider the emotional context graph of **E**motional **C**ontext **E**ncoder (ECE). 
-
-In ECE, we enrich the dialogue history with external knowledge into an emotional context graph. Then, the emotional signals of context are distilled based on the embeddings and emotion intensity values from the emotional context graph.
-```bash
-python main.py \
---cuda \
---label_smoothing \
---noam \
---emb_dim 300 \
---hidden_dim 300 \
---hop 1 \
---heads 2 \
---pretrain_emb \
---model wo_ECE \
---device_id 0 \
---concept_num 1 \
---total_concept_num 10 \
---pointer_gen \
---save_path result/wo_ECE/ \
---emb_file data/glove.6B.300d.txt
-```
-
-#### KEMP w/o EDD
-
-This model does not consider the emotional dependency strategies of **E**motion-**D**ependency **D**ecoder (EDD). 
-
-In EDD, given emotional signal and emotional context graph, we incorporate an emotional cross-attention mechanism to selectively learn the emotional dependencies. 
-```bash
-python main.py \
---cuda \
---label_smoothing \
---noam \
---emb_dim 300 \
---hidden_dim 300 \
---hop 1 \
---heads 2 \
---pretrain_emb \
---model wo_EDD \
---device_id 0 \
---concept_num 1 \
---total_concept_num 10 \
---pointer_gen \
---save_path result/wo_EDD/ \
---emb_file data/glove.6B.300d.txt
-```
 
 ## Testing
 > Add `--test` into above commands.
 
-You can directly run `/result/cal_metrics.py` script to evaluate the model predictions.
+You can directly run `/evaluate_result.py` script to evaluate the model predictions.
 
 
 ## Citation
 If you find our work useful, please cite our paper as follows:
 
 ```bibtex
-@article{li-etal-2022-kemp,
-  title={Knowledge Bridging for Empathetic Dialogue Generation},
-  author={Qintong Li and Piji Li and Zhaochun Ren and Pengjie Ren and Zhumin Chen},
-  booktitle={AAAI},
-  year={2022},
-}
+
 ```
 
