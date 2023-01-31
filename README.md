@@ -24,7 +24,7 @@ pip install -r requirements.txt
 
     - Download the processed [**ConceptNet data**](https://drive.google.com/file/d/1pURkucLpa0SAWfiwba_J28kM5NQuo0qD/view?usp=sharing) and place processed data `ConceptNet_ranked_dict.json` into `/data/knowledge_data/`,  meanwhile, download [**dataset_preproc.p**](https://drive.google.com/file/d/1si4hznX37dValdmKCgf38v4mMF07n3Z0/view?usp=sharing) and place it into `/data/`.
 
-- For reproducibility purposes, we place the model checkpoints at [**Google Drive**](https://drive.google.com/drive/folders/1g0MCmSClzM3VQoFy7LMhoEyBjOjiHTaJ?usp=sharing). You could download and move it under `/save/final/`.
+- For reproducibility purposes, we place the model [**checkpoints**](https://drive.google.com/drive/folders/1g0MCmSClzM3VQoFy7LMhoEyBjOjiHTaJ?usp=sharing). You could download and move it under `/save/final/`.
 
 - To skip training, please check folder `/result/CAB/output.txt/`.
 
