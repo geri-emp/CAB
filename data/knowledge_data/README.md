@@ -1,4 +1,4 @@
-#### This folder stores the knowledge data 
+#### This folder stores the processed ConceptNet data. 
 
 ```
 .
