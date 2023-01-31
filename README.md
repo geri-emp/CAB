@@ -12,7 +12,7 @@ This is the official implementation for paper [CAB: Empathetic Dialogue Generati
 ```console
 pip install -r requirements.txt
 ```
-- Download GloVe vectors from [**here (glove.6B.300d.txt)**]([http://nlp.stanford.edu/data/glove.6B.zip](https://drive.google.com/file/d/15ZEUyHCZ0f0mg0ecAFIbGInlkIUkOudY/view?usp=sharing)) and put it into `/data/`.
+- Download GloVe vectors from [**here (glove.6B.300d.txt)**]([[http://nlp.stanford.edu/data/glove.6B.zip](https://drive.google.com/file/d/15ZEUyHCZ0f0mg0ecAFIbGInlkIUkOudY/view?usp=sharing)]) and put it into `/data/`.
 
 - Download other data sources regarding ConceptNet and NRC_VAD lexicon, please visit [**Google Drive**](https://drive.google.com/drive/folders/1IooFlLv0wbKuwdLL_3mNaQ8WWa_TCSkp?usp=sharing) and place processed dataset `kemp_dataset_preproc.json` into `/data/`.
 
