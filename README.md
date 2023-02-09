@@ -63,6 +63,11 @@ You can directly run `/evaluate_result.py` script to evaluate the model predicti
 If you find our work useful, please cite our paper as follows:
 
 ```bibtex
-
+@article{CAB2023,
+      title={CAB: Empathetic Dialogue Generation with Cognition, Affection and Behavior}, 
+      author={Pan Gao, Donghong Han, Rui Zhou, Xuejiao Zhang, Zikun Wang},
+      journal={arXiv preprint arXiv:2302.01935},
+      year={2023},
+}
 ```
 
