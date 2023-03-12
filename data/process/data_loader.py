@@ -109,9 +109,8 @@ class GDataset(data.Dataset):
         """Converts words to ids."""
         if(key):
             X_dial = []
-            for i, sentence in enumerate(arr):
-                X_dial += [self.vocab.word2index[word] if word in self.vocab.word2index else config.UNK_idx for word in
-                        sentence]
+            for i, word in enumerate(arr):
+                X_dial += [self.vocab.word2index[word] if word in self.vocab.word2index else config.UNK_idx]
             return torch.LongTensor(X_dial)
         elif (anw):
             sequence = [self.vocab.word2index[word] if word in self.vocab.word2index else config.UNK_idx for word in
