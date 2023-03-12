@@ -1,6 +1,6 @@
 ## 	CAB: Empathetic Dialogue Generation with Cognition, Affection and Behavior
 
-This is the official implementation for paper [**CAB: Empathetic Dialogue Generation with Cognition, Affection and Behavior**](https://arxiv.org/abs/2302.01935) (DASFAA 2023).
+This is the official implementation for paper [**CAB: Empathetic Dialogue Generation with Cognition, Affection and Behavior**](https://arxiv.org/abs/2302.01935).
 
 ## Model Architecture
 
