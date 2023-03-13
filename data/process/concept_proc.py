@@ -36,7 +36,7 @@ if (os.path.exists('../dataset_preproc.p')):
         [data_tra, data_val, data_tst, vocab] = pickle.load(f)
 
 embeddings = glove_embedding(vocab)
-encoder = TransKnowEncoder(args.emb_dim, args.hidden_dim, num_layers=1, num_heads=args.heads, total_key_depth=args.depth,
+encoder = TransEncoder(args.emb_dim, args.hidden_dim, num_layers=1, num_heads=args.heads, total_key_depth=args.depth,
                        total_value_depth=args.depth, filter_size=args.filter, universal=args.universal)
 
 
