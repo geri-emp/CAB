@@ -728,7 +728,57 @@ class Encoder(nn.Module):
 
         return y
 
+class EncoderKnowLastLayer(nn.Module):
+    """
+    Represents one Encoder layer of the Transformer Encoder
+    NOTE: The layer normalization step has been moved to the input as per latest version of T2T
+    """
+    def __init__(self,hidden_size, total_key_depth, total_value_depth, filter_size, num_heads,
+                 bias_mask=None, layer_dropout=0.1, attention_dropout=0.1, relu_dropout=0.1):
+        """
+        :param hidden_size:
+        :param total_key_depth:
+        :param total_value_depth:
+        :param filter_size:
+        :param num_heads:
+        :param bias_mask: Masking tensor to prevent connections to future elements
+        :param layer_dropout: Dropout for this layer
+        :param attention_dropout:
+        :param relu_dropout:
+        """
+        super(EncoderKnowLastLayer, self).__init__()
+        self.multi_head_attention = MultiHeadAttention(hidden_size, total_key_depth, total_value_depth,
+                                                       hidden_size, num_heads, bias_mask, attention_dropout)
+        self.positionwise_feed_forward = PositionwiseFeedForward(hidden_size, filter_size, hidden_size,
+                                                                 layer_config='ll', padding = 'both',
+                                                                 dropout=relu_dropout)
+        self.dropout = nn.Dropout(layer_dropout)
+        self.layer_norm_mha = LayerNorm(hidden_size)
+        self.layer_norm_ffn = LayerNorm(hidden_size)
 
+    def forward(self,inputs,inputs_x,mask = None):
+        x = inputs
+        x_x = inputs_x
+        # Layer Normalization
+        x_norm = self.layer_norm_mha(x)
+        x_x_norm = self.layer_norm_mha(x_x)
+        # Multi-head attention
+        y, _ = self.multi_head_attention(x_x_norm, x_norm, x_norm, mask)
+
+        # Dropout and residual
+        x = self.dropout(x_x + y)
+
+        # Layer Normalization
+        x_norm = self.layer_norm_ffn(x)
+
+        # Positionwise Feedforward
+        y = self.positionwise_feed_forward(x_norm)
+
+        # Dropout and residual
+        y = self.dropout(x + y)
+
+        return y
+    
 class Decoder(nn.Module):
     """
     A Transformer Decoder module.
