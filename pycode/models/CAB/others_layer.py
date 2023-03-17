@@ -482,7 +482,89 @@ class Generator(nn.Module):
             return logit
         else:
             return F.log_softmax(logit, dim=-1)
+class TransKnowEncoder(nn.Module):
+    """
+    A Transformer Encoder module.
+    Inputs should be in the shape [batch_size, length, hidden_size]
+    Outputs will have the shape [batch_size, length, hidden_size]
 
+    """
+    def __init__(self,embedding_size, hidden_size, num_layers, num_heads, total_key_depth, total_value_depth,
+                 filter_size, max_length=1000, input_dropout=0, layer_dropout=0,
+                 attention_dropout=0.1, relu_dropout=0.1, use_mask=False, universal=False):
+        """
+        :param embedding_size:
+        :param hidden_size:
+        :param num_layers:
+        :param num_heads:
+        :param total_key_depth: Must be divisible by num_head
+        :param total_value_depth: Must be divisible by num_head
+        :param filter_size: Hidden size of the middle layer in FFN
+        :param max_length: Max sequence length (required for timing signal)
+        :param input_dropout: Dropout just after embedding
+        :param layer_dropout: Dropout for each layer
+        :param attention_dropout: Dropout probability after attention (Should be non-zero only during training)
+        :param relu_dropout: Dropout probability after relu in FFN (Should be non-zero only during training)
+        :param use_mask: Set to True to turn on future value masking
+        """
+        super(TransKnowEncoder, self).__init__()
+        self.universal = universal
+        self.num_layers = num_layers
+        self.timing_signal = gen_timing_signal(max_length,hidden_size)#torch.Size([1,max_length,hidden_size])
+        self.embedding_proj = nn.Linear(embedding_size, hidden_size,bias= False)
+        if(self.universal):
+            ## for t
+            self.position_signal = gen_timing_signal(num_layers, hidden_size)
+        params = (
+            hidden_size,
+            total_key_depth or hidden_size,
+            total_value_depth or hidden_size,
+            filter_size,
+            num_heads,
+            gen_inf_mask(max_length) if use_mask else None,#torch.Size([1, 1, max_length, max_length])
+            layer_dropout,
+            attention_dropout,
+            relu_dropout
+        )
+        if(self.universal):
+            self.enc = EncoderLayer(*params)
+        else:
+            self.enc = nn.ModuleList([EncoderLayer(*params) for _ in range(num_layers)])
+        self.last_layer = EncoderKnowLastLayer(*params)
+        self.layer_norm = LayerNorm(hidden_size)
+        self.input_dropout = nn.Dropout(input_dropout)
+        if(config.act):
+            self.act_fn = ACT_basic(hidden_size)
+            self.remainders = None
+            self.n_updates = None
+    def forward(self,inputs,inputs_x, mask):
+        #Add input dropout           
+        x = self.input_dropout(inputs)
+        # Project to hidden size
+        x = self.embedding_proj(x)
+        if(self.universal):
+            if(config.act):
+                x, (self.remainders, self.n_updates) = self.act_fn(x, inputs, self.enc, self.timing_signal, self.position_signal, self.num_layers)
+                y = self.layer_norm(x)
+            else:
+                for l in range(self.num_layers):
+                    x += self.timing_signal[:, :inputs.shape[1], :].type_as(inputs.data)
+                    x += self.position_signal[:, l, :].unsqueeze(1).repeat(1,inputs.shape[1],1).type_as(inputs.data)
+                    x = self.enc(x, mask=mask)
+                y = self.layer_norm(x)
+        else:
+            # Add timing signal 
+            x += self.timing_signal[:, :inputs.shape[1], :].type_as(inputs.data)
+            inputs_x += self.timing_signal[:, :inputs_x.shape[1], :].type_as(inputs_x.data)
+            # inputs_x += self.timing_signal[:, :inputs_x.shape[1], :].type_as(inputs_x.data)
+
+            for i in range(self.num_layers):
+                x = self.enc[i](x, mask)
+            x = self.last_layer(x,inputs_x,mask)
+            # x_l = self.last_layer(x,inputs_l,mask)
+            y = self.layer_norm(x)
+            # y_l = self.layer_norm(x_l)
+        return y
 
 def evaluate(model, data, ty = 'val', max_dec_step = 50, print_file = None, val_result=None):
     if ty=="test":
