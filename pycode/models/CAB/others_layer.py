@@ -22,6 +22,48 @@ from utils.common_layer import PositionwiseFeedForward
 from utils.config import args
 from utils.get_metrics import get_dist, calc_bleu
 
+
+class Node_attention_layer(nn.Module):
+    def __init__(self, hid, d_model, embedding):
+        super(Node_attention_layer, self).__init__()
+        self.attention_layer = nn.Sequential(nn.Linear(d_model*2, d_model), nn.Tanh())
+        self.attention_v = nn.Linear(d_model, 1, bias=False)
+        self.hidden_layer = nn.Sequential(nn.Linear(d_model*2, hid), nn.Tanh())
+        self.softmax = nn.Softmax(dim=-1)
+        self.emb = embedding
+
+    def forward(self, enc_outputs, x, key_concepts, mask_enc):
+        # enc_outputs.shape == (batch_size,seq,hid)
+        # x.shape == (batch_size, seq_len, d_model)
+        # mask.shape == (batch_size, 1, 1, seq_len)
+        # caculate attention score  计算注意力分数
+        scale = enc_outputs.size(-1) ** -0.5
+        concat_enc_outputs = torch.ones(enc_outputs.size(0), enc_outputs.size(1), enc_outputs.size(2)).cuda()
+        k_scores_batch = torch.ones(enc_outputs.size(0), enc_outputs.size(1)).cuda()
+        for batch in range(enc_outputs.size(0)):
+            if len(x[batch]) != 0:
+                projected = self.attention_layer(x[batch])  # (batch_size, seq_len, d_model)
+                logits = torch.matmul(enc_outputs[batch], projected.transpose(0, 1))  # (batch_size, seq, seq_len)
+                if len(key_concepts[batch]) != 0:
+                    k_logits = torch.matmul(enc_outputs[batch] * scale, self.emb(key_concepts[batch]).transpose(0, 1))
+                else:
+                    k_logits = torch.tensor([]).cuda()
+                mask = mask_enc[batch].squeeze().unsqueeze(1)
+                if mask is not None:
+                    logits = logits.masked_fill(mask, -1e18)  # (batch_size, seq_len) 1的位置会被mask掉
+                    k_logits = k_logits.masked_fill(mask, -1e18)
+
+                scores = self.softmax(logits)# (batch_size, seq, seq_len)
+                k_scores = self.softmax(k_logits)
+                if len(key_concepts[batch]) != 0:
+                    k_scores, _ = torch.max(k_scores, dim=-1) #(batch,seq_len)
+                    k_scores_batch[batch] = k_scores
+
+                dot_x = torch.matmul(scores, projected) # x.shape == (batch_size, seq, d_model)
+                temp = torch.cat((enc_outputs[batch], dot_x), dim = -1)
+                concat_enc_outputs[batch] = self.hidden_layer(temp)
+        return concat_enc_outputs, k_scores_batch
+
 def write_config():
     if(not config.test):
         if not os.path.exists(config.save_path):
